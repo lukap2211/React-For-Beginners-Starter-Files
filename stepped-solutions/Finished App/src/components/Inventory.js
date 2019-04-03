@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import AddFishForm from "./AddFishForm";
 import EditFishForm from "./EditFishForm";
 import Login from "./Login";
@@ -42,7 +42,9 @@ class Inventory extends React.Component {
     // 3. Set the state of the inventory component to reflect the current user
     this.setState({
       uid: authData.user.uid,
-      owner: store.owner || authData.user.uid
+      owner: store.owner || authData.user.uid,
+      displayName: authData.user.displayName,
+      photoURL: authData.user.photoURL
     });
   };
 
@@ -62,6 +64,11 @@ class Inventory extends React.Component {
 
   render() {
     const logout = <button onClick={this.logout}>Log Out!</button>;
+    const userInfo = (
+      <div>{this.state.displayName}
+        <img src={this.state.photoURL} alt={this.state.displayName} />
+      </div>
+      )
 
     // 1. Check if they are logged in
     if (!this.state.uid) {
@@ -83,6 +90,7 @@ class Inventory extends React.Component {
       <div className="inventory">
         <h2>Inventory</h2>
         {logout}
+        {userInfo}
         {Object.keys(this.props.fishes).map(key => (
           <EditFishForm
             key={key}
